@@ -5,15 +5,12 @@ const char * password = "pwd";
 char ingang;
 
 WiFiServer server(80);
-
 String header;
 
 String K1Std = "off";
 String K2Std = "off";
 String K3Std = "off";
 String dummyStd = "off";
-
-
 
 const int K[] = {26,27,14,0};
 const int S[] = {32,34,35,25,33};
@@ -27,7 +24,7 @@ const long timeoutTime = 200;
 
 void setup() {
   Serial.begin(115200);
-  pinMode(2,OUTPUT);
+  pinMode(2, OUTPUT);
 
   for (int i = 0; i < 5; i++) {
     pinMode(S[i], INPUT);
@@ -58,7 +55,7 @@ void setup() {
 }
 
 void loop() {
-  
+
   if (Serial.available() > 0) {
     char ingang = Serial.read();
     cliHandler(ingang);
@@ -77,13 +74,13 @@ void loop() {
       kStd[0] = !kStd[0];
       digitalWrite(K[0], kStd[0]);
       if (kStd[0]) {
-      Serial.println("\033[32;49m[S1] E1 AAN");
-      K1Std = "on";
-      rdy();
+        Serial.println("\033[32;49m[S1] E1 AAN");
+        K1Std = "on";
+        rdy();
       } else {
-      Serial.println("\033[31;49m[S1] E1 UIT");
-      K1Std = "off";
-      rdy();
+        Serial.println("\033[31;49m[S1] E1 UIT");
+        K1Std = "off";
+        rdy();
       }
     }
   }
@@ -98,13 +95,13 @@ void loop() {
       kStd[1] = !kStd[1];
       digitalWrite(K[1], kStd[1]);
       if (kStd[1]) {
-      Serial.println("\033[32;49m[S2] E2 AAN");
-      K2Std = "on";
-      rdy();
+        Serial.println("\033[32;49m[S2] E2 AAN");
+        K2Std = "on";
+        rdy();
       } else {
-      Serial.println("\033[31;49m[S2] E2 UIT");
-      K2Std = "off";
-      rdy();
+        Serial.println("\033[31;49m[S2] E2 UIT");
+        K2Std = "off";
+        rdy();
       }
     }
   }
@@ -119,13 +116,13 @@ void loop() {
       kStd[2] = !kStd[2];
       digitalWrite(K[2], kStd[2]);
       if (kStd[2]) {
-      Serial.println("\033[32;49m[S3] E3 AAN");
-      K3Std = "on";
-      rdy();
+        Serial.println("\033[32;49m[S3] E3 AAN");
+        K3Std = "on";
+        rdy();
       } else {
-      Serial.println("\033[31;49m[S3] E3 UIT");
-      K3Std = "off";
-      rdy();
+        Serial.println("\033[31;49m[S3] E3 UIT");
+        K3Std = "off";
+        rdy();
       }
     }
   }
@@ -149,7 +146,6 @@ void loop() {
     }
     hrkKnopStd[3] = hdgKnopStd[3];
   }
-  
 
   if (hdgKnopStd[4] != hrkKnopStd[4] && kStd[0] == LOW || kStd[1] == LOW || kStd[2] == LOW) {
     if (hdgKnopStd[4] == HIGH) {
@@ -168,14 +164,14 @@ void loop() {
     }
     hrkKnopStd[4] = hdgKnopStd[4];
   }
-  
+
   WiFiClient client = server.available();
 
   if (client) {
     IPAddress ip = client.remoteIP();
     currentTime = millis();
     previousTime = currentTime;
-    
+
     String currentLine = "";
     while (client.connected() && currentTime - previousTime <= timeoutTime) {
       currentTime = millis();
@@ -252,14 +248,14 @@ void loop() {
               Serial.print("\033[35;49;1m[HTTP VERFRIS @ ");
               Serial.print(ip);
               Serial.println("]");
-              rdy();              
+              rdy();
               dummyStd = "on";
               digitalWrite(K[3], HIGH);
             } else if (header.indexOf("GET /dummy/uit") >= 0) {
               Serial.print("\033[35;49;1m[HTTP VERFRIS @ ");
               Serial.print(ip);
               Serial.println("]");
-              rdy();       
+              rdy();
               digitalWrite(K[3], LOW);
             }
 
@@ -339,7 +335,6 @@ void loop() {
   }
 }
 
-
 void cliHandler(char ingang) {
   if (ingang == '1') {
     Serial.println(ingang);
@@ -387,31 +382,31 @@ void cliHandler(char ingang) {
   }
 
   if (ingang == '4' || ingang == '0') {
-      Serial.println(ingang);
-      kStd[2] = LOW;
-      kStd[1] = LOW;
-      kStd[0] = LOW;
-      digitalWrite(K[2], LOW);
-      digitalWrite(K[1], LOW);
-      digitalWrite(K[0], LOW);
-      K1Std = "off";
-      K2Std = "off";
-      K3Std = "off";
-      Serial.println("\033[31;49m[4/0] Alle lampen UIT");
-      rdy();
+    Serial.println(ingang);
+    kStd[2] = LOW;
+    kStd[1] = LOW;
+    kStd[0] = LOW;
+    digitalWrite(K[2], LOW);
+    digitalWrite(K[1], LOW);
+    digitalWrite(K[0], LOW);
+    K1Std = "off";
+    K2Std = "off";
+    K3Std = "off";
+    Serial.println("\033[31;49m[4/0] Alle lampen UIT");
+    rdy();
   }
 
   if (ingang == '5') {
     Serial.println(ingang);
-      kStd[2] = HIGH;
-      kStd[1] = HIGH;
-      kStd[0] = HIGH;
-      digitalWrite(K[2], HIGH);
-      digitalWrite(K[1], HIGH);
-      digitalWrite(K[0], HIGH);
-      K1Std = "on";
-      K2Std = "on";
-      K3Std = "on";
+    kStd[2] = HIGH;
+    kStd[1] = HIGH;
+    kStd[0] = HIGH;
+    digitalWrite(K[2], HIGH);
+    digitalWrite(K[1], HIGH);
+    digitalWrite(K[0], HIGH);
+    K1Std = "on";
+    K2Std = "on";
+    K3Std = "on";
     Serial.println("\033[32;49m[5] Alle lampen AAN");
     rdy();
   }
@@ -434,7 +429,6 @@ void cliHandler(char ingang) {
     Serial.println("[I] Informatie");
     rdy();
   }
-
 
   if (ingang == 'c' || ingang == 'C') {
     Serial.print("[\033[2J\033[H");
@@ -471,7 +465,7 @@ void netBlink() {
   delay(50);
   digitalWrite(2, LOW);
   delay(50);
-  digitalWrite(2, HIGH); 
+  digitalWrite(2, HIGH);
   delay(50);
-  digitalWrite(2, LOW); 
+  digitalWrite(2, LOW);
 }
